@@ -32,15 +32,6 @@ resource "aws_instance" "monk_instance" {
   tags = {
     Name = "monk-instance-master"
   }
-  user_data = <<EOF
-#!/bin/bash
-yum -y update
-yum -y install httpd
-ip=`curl http://169.254.169.254/latest/meta-data/local-ipv4`
-echo "<h2>Public ip $ip</h2>" > /var/www/html/index.html
-sudo service httpd start
-chkconfig httpd on
-EOF
 }
 
 resource "aws_security_group" "monk_sg" {
