@@ -10,7 +10,7 @@ variable "monk_state_bucket" {
 
 variable "monk_state_path" {
   type = string
-  default = "dev/monk"
+  default = "dev/monk/states/"
 }
 
 variable "monk_state_bucket_reg" {
