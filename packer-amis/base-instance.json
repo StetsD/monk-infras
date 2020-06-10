@@ -1,0 +1,49 @@
+{
+  "variables": {
+    "aws_access_key": "{{env `ACCESS_KEY_ID_PACKER`}}",
+    "aws_secret_key": "{{env `SECRET_ACCESS_KEY_PACKER`}}",
+    "aws_keypair_file": "{{env `AWS_KEYPAIR_NAME`}}",
+    "aws_cert_path": "{{env `AWS_CERT_PATH`}}",
+    "aws_key_path": "{{env `AWS_KEY_PATH`}}",
+    "pass": "{{env `PASS`}}"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "region": "eu-central-1",
+      "source_ami": "ami-0e342d72b12109f91",
+      "instance_type": "t2.micro",
+      "ami_name": "monk-instance {{timestamp}}",
+      "communicator": "ssh",
+      "ssh_username": "ubuntu",
+      "ssh_keypair_name": "monk",
+      "ssh_private_key_file": "{{user `aws_keypair_file`}}",
+      "run_tags" : {
+        "Name" : "monk"
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "echo '{{user `pass`}}' | sudo -S apt-get update",
+        "wget https://dl.google.com/go/go1.14.4.linux-amd64.tar.gz",
+        "sudo -S tar -C /usr/local -xzf go1.14.4.linux-amd64.tar.gz",
+        "export PATH=$PATH:/usr/local/go/bin",
+        "sudo -S apt-get remove docker docker-engine docker.io containerd runc",
+        "sudo -S apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common",
+        "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -",
+        "sudo -S apt-key fingerprint 0EBFCD88",
+        "sudo -S add-apt-repository \"deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\"",
+        "sudo -S apt-get update",
+        "sudo -S apt-get install -y docker-ce docker-ce-cli containerd.io",
+        "sudo -S curl -L \"https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)\" -o /usr/local/bin/docker-compose",
+        "sudo -S chmod +x /usr/local/bin/docker-compose",
+        "sudo -S ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose"
+      ]
+    }
+  ]
+}
