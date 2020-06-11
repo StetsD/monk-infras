@@ -1,2 +1,2 @@
 [prod]
-monk-master ansible_host=18.195.226.102
+monk-master ansible_host=*

@@ -67,3 +67,27 @@
             curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine &&
             sudo mv /tmp/docker-machine /usr/local/bin/docker-machine &&
             chmod +x /usr/local/bin/docker-machine"
+
+- name: Install VB driver
+  apt:
+    deb: https://download.virtualbox.org/virtualbox/6.1.10/virtualbox-6.1_6.1.10-138449~Ubuntu~bionic_amd64.deb
+
+- name: Update cache pkg
+  apt:
+    name: '*'
+    state: latest
+    update_cache: yes
+
+- name: Install Others
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - build-essential
+    - gcc
+    - make
+    - perl
+    - dkms
+
+- name: Restart VB driver
+  shell: "sudo /sbin/vboxconfig"

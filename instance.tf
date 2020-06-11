@@ -52,6 +52,13 @@ resource "aws_security_group" "monk_sg" {
   }
 
   ingress {
+    from_port = 2377
+    to_port = 2377
+    protocol = "tcp"
+    cidr_blocks = ["${var.work_machine_ip}/32"]
+  }
+
+  ingress {
     from_port = 443
     to_port = 443
     protocol = "tcp"
