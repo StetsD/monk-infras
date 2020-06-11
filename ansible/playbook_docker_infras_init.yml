@@ -1,0 +1,8 @@
+
+---
+- name: Docker infrastructure init for monkapp
+  hosts: prod
+  become: yes
+
+  roles:
+    - { role: docker_infras_init, when: "ansible_facts['distribution'] == 'Ubuntu'" }

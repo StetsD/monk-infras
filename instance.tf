@@ -10,12 +10,12 @@ terraform {
   }
 }
 
-data "aws_ami" "amazon_latest" {
-  owners = ["amazon"]
+data "aws_ami" "ubuntu_latest" {
+  owners = ["099720109477"]
   most_recent = true
   filter {
     name = "name"
-    values = ["amzn-ami-hvm-*-x86_64-gp2"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
   }
 }
 
@@ -25,7 +25,7 @@ resource "aws_key_pair" "key_pair_master" {
 }
 
 resource "aws_instance" "monk_instance" {
-  ami = var.monk_ami != "" ? var.monk_ami : data.aws_ami.amazon_latest.id
+  ami = var.monk_ami != "" ? var.monk_ami : data.aws_ami.ubuntu_latest.id
   instance_type = "t3.micro"
   vpc_security_group_ids = [aws_security_group.monk_sg.id]
   key_name = aws_key_pair.key_pair_master.key_name
